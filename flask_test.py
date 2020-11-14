@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 @app.route('/test/')
 def flask_test():
+    print('TEST')
     return "yo"
 
 if __name__ == '__main__':
