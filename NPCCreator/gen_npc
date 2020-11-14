@@ -48,18 +48,21 @@ def gen_options():
 
 
 class NPC:
-  def __init__(self, variant, age, specialization, abilities=None):
-    from collections import defaultdict
+  def __init__(self, variant, age, specialization):
     self.variant = variant
     self.age = age
     self.specialization = specialization
-    self.abilities = defaultdict(int)
-    self.characteristics = None
+    self.abilities = {}
+    self.characteristics = {}
     self.primary_ability = None
-    self.secondary = None
+    self.secondary_abilities = {}
 
   def randomize_abilities(abilities):
     import random
+    from collections import defaultdict
+    if type(abilities) == dict or type(abilities) == defaultdict:
+      abilities = list(abilities.keys())
+
     return abilities[random.randint(0, len(abilities) - 1)]
 
   def gen_characteristics():
@@ -67,12 +70,16 @@ class NPC:
     return generate_characteristics()
 
 
-  def gen_early_abilities(abilities):
+  def gen_early_abilities(self):
+    from collections import defaultdict
+    abilities = defaultdict(int)
     abilities["Native Language"] = 75
     available_points = 45
 
     while available_points > 0:
       stat_to_increase = NPC.randomize_abilities(EARLY_LIFE_ABILITIES)
+      while stat_to_increase == "Native Language":  # <-- Do not want Native Language to increase further
+        stat_to_increase = NPC.randomize_abilities(EARLY_LIFE_ABILITIES)
       abilities[stat_to_increase] += 5
       available_points -= 5
 
@@ -80,23 +87,37 @@ class NPC:
 
 
   def gen_later_abilities(self):
-    primary_ability, secondary = self.set_ability_priorities()
-    available_points = (age - 5) * 15
-    if self.variant == 'grog':
-      pass
-    elif self.variant == 'noble':
-      pass
-    else:
-      pass
+    primary_ability = self.set_primary_ability()
+    self.primary_ability = primary_ability
+    secondary_abilities = self.set_secondary_abilities()
+    self.secondary_abilities = secondary_abilities
 
-  def set_ability_priorities(self):
-    import random
-    primary = self.set_primary_ability()
-        
-  def set_primary_ability():
+    current_abilities = self.abilities.copy()
+    current_abilities[primary_ability]  # <-- Ensures priamry_ability is in current_abilities
+    current_abilities.update(secondary_abilities)
+
+    for i in range(5, self.age):
+      # FIXME: Check the EXP requirements for level 7 ability
+      if current_abilities[primary_ability] < 150:
+        current_abilities[primary_ability] += 5
+      else:
+        current_abilities[NPC.randomize_abilities(current_abilities)] += 5
+
+      # Give the character's secondary abilities +5 exp
+      current_abilities[NPC.randomize_abilities(secondary_abilities)] += 5
+
+      # Randomly give one of any of the character's abilities +5 exp
+      ability_to_raise = NPC.randomize_abilities(current_abilities)
+      if ability_to_raise == "Native Language":
+        ability_to_raise = NPC.randomize_abilities(current_abilities)  # <-- Make Native Language a rarer roll
+      current_abilities[NPC.randomize_abilities(current_abilities)] += 5
+
+    return current_abilities
+
+  def set_primary_ability(self):
     if self.variant == "grog":
       if self.specialization not in MARTIAL_ABILITIES:
-        weapon_choice = MARTIAL_ABILITIES[random.randint(0, len(MARTIAL_ABILITIES) - 1)]
+        weapon_choice = NPC.randomize_abilities(MARTIAL_ABILITIES)
         return weapon_choice
       else:
         return self.specialization
@@ -104,17 +125,50 @@ class NPC:
       if self.specialization:
         return self.specialization
       else:
-        return
+        return NPC.randomize_abilities(SOCIAL_ABILITIES)
+    elif self.variant == "covenfolk":
+      if self.specialization:
+        return self.specialization
+      else:
+        return None
+    elif self.variant == "specialist":
+      if self.specialization:
+        return self.specialization
+      else:
+        return NPC.randomize_abilities(PROFESSIONAL_ABILITIES)
+    else:
+      return NPC.randomize_abilities(GENERAL_ABILITIES)
 
+  def set_secondary_abilities(self):
+    secondaries = {}
+    if self.variant == "grog":
+      # Give grogs some combat abilities
+      while len(secondaries.keys()) < 3:
+        this_ability = NPC.randomize_abilities(SURVIVAL_ABILITIES)
+        if this_ability != self.primary_ability:
+          secondaries[this_ability] = 0
+
+      while len(secondaries.keys()) < 5:
+        this_ability = NPC.randomize_abilities(SOCIAL_ABILITIES)
+        if this_ability != self.primary_ability:
+          secondaries[this_ability] = 0
+
+      return secondaries
+      
 
 def main():
   args = vars(gen_options().parse_args())
   new_npc = NPC(**args)
-  new_npc.abilities = NPC.gen_early_abilities(new_npc.abilities)
+  new_npc.abilities = new_npc.gen_early_abilities()
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
-  print('NEW_NPC:', vars(new_npc))
+  #print('NEW_NPC:', vars(new_npc))
+  print("NPC Type:", new_npc.variant)
+  print("NPC Age:", new_npc.age)
+  print("NPC Characteristics:", new_npc.characteristics)
+  print("NPC Abilities:", new_npc.abilities)
+
   return new_npc
 
 if __name__ == '__main__':
