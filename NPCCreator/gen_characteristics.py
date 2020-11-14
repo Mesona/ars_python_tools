@@ -24,7 +24,7 @@ CHARACTERISTICS = {
 
 def generate_characteristics():
   import random
-  these_characteristics = CHARACTERISTIC_BLOCKS[random.randint(0, len(CHARACTERISTIC_BLOCKS) - 1)]
+  these_characteristics = CHARACTERISTIC_BLOCKS[random.randint(0, len(CHARACTERISTIC_BLOCKS) - 1)].copy()
   random.shuffle(these_characteristics)
   for key in CHARACTERISTICS.keys():
     CHARACTERISTICS[key] = these_characteristics.pop()

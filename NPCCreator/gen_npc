@@ -8,6 +8,9 @@ from abilities import MARTIAL_ABILITIES
 from abilities import PROFESSIONAL_ABILITIES
 from abilities import SOCIAL_ABILITIES
 from abilities import SURVIVAL_ABILITIES
+from flask import Flask
+
+app = Flask(__name__)
 
 def gen_options():
   import argparse
@@ -165,7 +168,7 @@ class NPC:
           secondaries[this_ability] = 0
 
       return secondaries
-      
+
 
 def main():
   args = vars(gen_options().parse_args())
@@ -184,3 +187,9 @@ def main():
 
 if __name__ == '__main__':
   exit(main())
+
+
+@app.route('/')
+def flask_test():
+  return 'test'
+
