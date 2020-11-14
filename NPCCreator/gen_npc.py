@@ -51,7 +51,7 @@ def gen_options():
 
 
 class NPC:
-  def __init__(self, variant, age, specialization):
+  def __init__(self, variant="grog", age=25, specialization=None):
     self.variant = variant
     self.age = age
     self.specialization = specialization
@@ -190,6 +190,16 @@ if __name__ == '__main__':
 
 
 @app.route('/')
-def flask_test():
-  return 'test'
-
+def flask_main():
+  #args = vars(gen_options().parse_args())
+  new_npc = NPC(variant="grog", age=25, specialization=None)
+  new_npc.abilities = new_npc.gen_early_abilities()
+  new_npc.characteristics = NPC.gen_characteristics()
+  if new_npc.age > 5:
+    new_npc.abilities = new_npc.gen_later_abilities()
+  #print('NEW_NPC:', vars(new_npc))
+  print("NPC Type:", new_npc.variant)
+  print("NPC Age:", new_npc.age)
+  print("NPC Characteristics:", new_npc.characteristics)
+  print("NPC Abilities:", new_npc.abilities)
+  return vars(new_npc)
