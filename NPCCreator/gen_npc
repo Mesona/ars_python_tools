@@ -95,8 +95,10 @@ class NPC:
     current_abilities = self.abilities.copy()
     current_abilities[primary_ability]  # <-- Ensures priamry_ability is in current_abilities
     current_abilities.update(secondary_abilities)
+    base_ability_count = len(current_abilities.keys())
 
     for i in range(5, self.age):
+      current_ability_count = len(current_abilities.keys())
       # FIXME: Check the EXP requirements for level 7 ability
       if current_abilities[primary_ability] < 150:
         current_abilities[primary_ability] += 5
@@ -111,6 +113,15 @@ class NPC:
       if ability_to_raise == "Native Language":
         ability_to_raise = NPC.randomize_abilities(current_abilities)  # <-- Make Native Language a rarer roll
       current_abilities[NPC.randomize_abilities(current_abilities)] += 5
+
+      # Add a new ability to the general abilities every 10 years, starting at 21
+      if (i / 10) > (current_ability_count - base_ability_count + 2):
+        new_ability = NPC.randomize_abilities(GENERAL_ABILITIES)
+        # Ensure the new ability is actually new
+        while new_ability in current_abilities.keys():
+          new_ability = NPC.randomize_abilities(GENERAL_ABILITIES)
+
+        current_abilities[new_ability]
 
     return current_abilities
 
