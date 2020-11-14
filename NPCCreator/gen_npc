@@ -1,42 +1,13 @@
 #!/bin/python
-
-EARLY_LIFE_ABILITIES = [
-  "Athletics",
-  "Awareness",
-  "Brawl",
-  "Charm",
-  "Folk Ken",
-  "Guile",
-  "Living Language",
-  "Stealth",
-  "Survival",
-  "Swim",
-]
-
-LATE_LIFE_ABILITIES = [
-  "Area Lore",
-  "Bargain",
-  "Carouse",
-  "Chirugy",
-  "Hunt",
-]
-
-NOBLE_ABILITIES = [
-  "Artes Liberales",
-  "Church Lore",
-  "Civil and Canon Law",
-  "Medicine",
-  "Philosophiae",
-  "Teaching",
-  "Theology",
-]
-
-WEAPON_CHOICE_ABILITIES = [
-  "Bows",
-  "Great Weapon",
-  "Single Weapon",
-  "Thrown Weapon",
-]
+from abilities import ACADEMIC_ABILITIES
+from abilities import ALL_ABILITIES
+from abilities import EARLY_LIFE_ABILITIES
+from abilities import GENERAL_ABILITIES
+from abilities import LATE_LIFE_ABILITIES
+from abilities import MARTIAL_ABILITIES
+from abilities import PROFESSIONAL_ABILITIES
+from abilities import SOCIAL_ABILITIES
+from abilities import SURVIVAL_ABILITIES
 
 def gen_options():
   import argparse
@@ -49,7 +20,7 @@ def gen_options():
     '--variant',
     type=str,
     default='grog',
-    help='The variant of NPC. Choices are "grog", "noble", "servant", "specialist".'
+    help='The variant of NPC. Choices are "grog", "noble", "covenfolk", "specialist".'
   )
 
   parser.add_argument(
@@ -64,10 +35,13 @@ def gen_options():
     type=str,
     default="any",
     help='''
-      The specialization of this NPC.
-      For Grogs, choices are"great", "single", and "ranged".
+      The ability focus of this NPC.
+      In addition to naming a specific ability, several "classes" can be specified.
+      Available ability classes are: "academic", "religious", "merchant", "social", 
+      For Grogs, choices are "great", "single", and "ranged".
       For Nobles, these are "Artsy", "Fartsy", and "Entitled".
-      For servants, you get what you get.
+      For Specialists you can choose "academic", "crafter", "professional", or "teacher".
+      For Covernfolk you get what you get.
     '''
   )
   return parser
@@ -81,6 +55,8 @@ class NPC:
     self.specialization = specialization
     self.abilities = defaultdict(int)
     self.characteristics = None
+    self.primary_ability = None
+    self.secondary = None
 
   def randomize_abilities(abilities):
     import random
@@ -103,7 +79,8 @@ class NPC:
     return abilities
 
 
-  def gen_later_abilities(abilities, age):
+  def gen_later_abilities(self):
+    primary_ability, secondary = self.set_ability_priorities()
     available_points = (age - 5) * 15
     if self.variant == 'grog':
       pass
@@ -112,12 +89,31 @@ class NPC:
     else:
       pass
 
+  def set_ability_priorities(self):
+    import random
+    primary = self.set_primary_ability()
+        
+  def set_primary_ability():
+    if self.variant == "grog":
+      if self.specialization not in MARTIAL_ABILITIES:
+        weapon_choice = MARTIAL_ABILITIES[random.randint(0, len(MARTIAL_ABILITIES) - 1)]
+        return weapon_choice
+      else:
+        return self.specialization
+    elif self.variant == "noble":
+      if self.specialization:
+        return self.specialization
+      else:
+        return
+
 
 def main():
   args = vars(gen_options().parse_args())
   new_npc = NPC(**args)
   new_npc.abilities = NPC.gen_early_abilities(new_npc.abilities)
   new_npc.characteristics = NPC.gen_characteristics()
+  if new_npc.age > 5:
+    new_npc.abilities = new_npc.gen_later_abilities()
   print('NEW_NPC:', vars(new_npc))
   return new_npc
 
