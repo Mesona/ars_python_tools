@@ -203,3 +203,4 @@ def flask_main():
   print("NPC Characteristics:", new_npc.characteristics)
   print("NPC Abilities:", new_npc.abilities)
   return vars(new_npc)
+
