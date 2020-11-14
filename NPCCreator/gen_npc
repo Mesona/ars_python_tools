@@ -1,0 +1,125 @@
+#!/bin/python
+
+EARLY_LIFE_ABILITIES = [
+  "Athletics",
+  "Awareness",
+  "Brawl",
+  "Charm",
+  "Folk Ken",
+  "Guile",
+  "Living Language",
+  "Stealth",
+  "Survival",
+  "Swim",
+]
+
+LATE_LIFE_ABILITIES = [
+  "Area Lore",
+  "Bargain",
+  "Carouse",
+  "Chirugy",
+  "Hunt",
+]
+
+NOBLE_ABILITIES = [
+  "Artes Liberales",
+  "Church Lore",
+  "Civil and Canon Law",
+  "Medicine",
+  "Philosophiae",
+  "Teaching",
+  "Theology",
+]
+
+WEAPON_CHOICE_ABILITIES = [
+  "Bows",
+  "Great Weapon",
+  "Single Weapon",
+  "Thrown Weapon",
+]
+
+def gen_options():
+  import argparse
+  parser = argparse.ArgumentParser(
+    description="ABC 123",
+    formatter_class=argparse.RawTextHelpFormatter,
+  )
+
+  parser.add_argument(
+    '--variant',
+    type=str,
+    default='grog',
+    help='The variant of NPC. Choices are "grog", "noble", "servant", "specialist".'
+  )
+
+  parser.add_argument(
+    '--age',
+    type=int,
+    default=25,
+    help='The age of this NPC. Available range is 6 and above.'
+  )
+
+  parser.add_argument(
+    '--specialization',
+    type=str,
+    default="any",
+    help='''
+      The specialization of this NPC.
+      For Grogs, choices are"great", "single", and "ranged".
+      For Nobles, these are "Artsy", "Fartsy", and "Entitled".
+      For servants, you get what you get.
+    '''
+  )
+  return parser
+
+
+class NPC:
+  def __init__(self, variant, age, specialization, abilities=None):
+    from collections import defaultdict
+    self.variant = variant
+    self.age = age
+    self.specialization = specialization
+    self.abilities = defaultdict(int)
+    self.characteristics = None
+
+  def randomize_abilities(abilities):
+    import random
+    return abilities[random.randint(0, len(abilities) - 1)]
+
+  def gen_characteristics():
+    from gen_characteristics import generate_characteristics
+    return generate_characteristics()
+
+
+  def gen_early_abilities(abilities):
+    abilities["Native Language"] = 75
+    available_points = 45
+
+    while available_points > 0:
+      stat_to_increase = NPC.randomize_abilities(EARLY_LIFE_ABILITIES)
+      abilities[stat_to_increase] += 5
+      available_points -= 5
+
+    return abilities
+
+
+  def gen_later_abilities(abilities, age):
+    available_points = (age - 5) * 15
+    if self.variant == 'grog':
+      pass
+    elif self.variant == 'noble':
+      pass
+    else:
+      pass
+
+
+def main():
+  args = vars(gen_options().parse_args())
+  new_npc = NPC(**args)
+  new_npc.abilities = NPC.gen_early_abilities(new_npc.abilities)
+  new_npc.characteristics = NPC.gen_characteristics()
+  print('NEW_NPC:', vars(new_npc))
+  return new_npc
+
+if __name__ == '__main__':
+  exit(main())
