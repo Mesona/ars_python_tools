@@ -11,6 +11,7 @@ from abilities import SURVIVAL_ABILITIES
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
+app.debug = True
 
 def gen_options():
   import argparse
@@ -191,10 +192,25 @@ if __name__ == '__main__':
 @app.route('/', methods=['GET'])
 def variant_dropdown():
     variants = ['turb', 'grog', 'noble', 'specialized', 'covenfolk']
-    return render_template('gen_npc.html', variants=variants)
+    ages = list(range(5, 71))
+    specialties = ALL_ABILITIES
+    return render_template('gen_npc.html', variants=variants, ages=ages, specialties=specialties)
+
+@app.route('/random/generated_npc')
+def generated_npc():
+  new_npc = NPC(variant=variant, age=age, specialization=specialization)
+  new_npc.abilities = new_npc.gen_early_abilities()
+  new_npc.characteristics = NPC.gen_characteristics()
+  if new_npc.age > 5:
+    new_npc.abilities = new_npc.gen_later_abilities()
+  print("NPC Type:", new_npc.variant)
+  print("NPC Age:", new_npc.age)
+  print("NPC Characteristics:", new_npc.characteristics)
+  print("NPC Abilities:", new_npc.abilities)
+  return vars(new_npc)
 
 @app.route('/random/npc/')
-def flask_main():
+def randomized_npc():
   import random
   #npc_variant = ['turb', 'grog', 'noble', 'specialized', 'covenfolk']
   npc_variant = ['grog']
