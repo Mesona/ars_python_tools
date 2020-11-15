@@ -8,7 +8,8 @@ from abilities import MARTIAL_ABILITIES
 from abilities import PROFESSIONAL_ABILITIES
 from abilities import SOCIAL_ABILITIES
 from abilities import SURVIVAL_ABILITIES
-from flask import Flask, render_template, request
+from flask import Flask, flash, redirect, render_template, \
+     request, url_for
 
 app = Flask(__name__)
 app.debug = True
@@ -189,24 +190,36 @@ if __name__ == '__main__':
   exit(main())
 
 
-@app.route('/', methods=['GET'])
-def variant_dropdown():
+@app.route('/')
+def gen_index():
     variants = ['turb', 'grog', 'noble', 'specialized', 'covenfolk']
     ages = list(range(5, 71))
     specialties = ALL_ABILITIES
-    return render_template('gen_npc.html', variants=variants, ages=ages, specialties=specialties)
+    return render_template(
+      'gen_npc.html',
+      # FIXME: Figure out how to properly pass lists through Flask
+      variants=[{'variant': variant} for variant in variants],
+      ages=[{'age': age} for age in ages],
+      specialties=[{'specialty': specialty} for specialty in specialties],
+    )
 
-@app.route('/random/generated_npc')
+@app.route('/random/generated_npc', methods=['GET', 'POST'])
 def generated_npc():
+  variant = request.form.get('variant')
+  age = int(request.form.get('age'))
+  specialization = request.form.get('specialty')
+  #return str(variant), str(age), str(specialty)
+  #return str(variant)
+  #return "Age: " + str(age) + "\nVariant: " + str(variant)
   new_npc = NPC(variant=variant, age=age, specialization=specialization)
   new_npc.abilities = new_npc.gen_early_abilities()
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
-  print("NPC Type:", new_npc.variant)
-  print("NPC Age:", new_npc.age)
-  print("NPC Characteristics:", new_npc.characteristics)
-  print("NPC Abilities:", new_npc.abilities)
+  #print("NPC Type:", new_npc.variant)
+  #print("NPC Age:", new_npc.age)
+  #print("NPC Characteristics:", new_npc.characteristics)
+  #print("NPC Abilities:", new_npc.abilities)
   return vars(new_npc)
 
 @app.route('/random/npc/')
