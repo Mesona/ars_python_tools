@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>NPC Creator</title>
+  </head>
+  <body>
+    <form class="form-inline" method="POST" action="{{ url_for('generated_npc') }}">
+    NPC Variant: <select name="variant">
+      {% for variant in variants %}
+        <option value="{{variant.variant}}">{{variant.variant}}</option>"
+      {% endfor %}
+    </select>
+    <br>
+    NPC Age: <select name="age">
+      {% for age in ages %}
+        <option value= "{{age.age}}">{{age.age}}</option>"
+      {% endfor %}
+    </select>
+    <br>
+    NPC Specialty (Optional): <select name="specialty">
+      <option value= "None" selected>None</option>"
+      {% for specialty in specialties %}
+        <option value= "{{ specialty.specialty }}">{{ specialty.specialty }}</option>"
+      {% endfor %}
+    </select>
+    <br>
+    <li>
+      <br>
+      <button type="submit" class="btn btn-default">GO</button>
+    </li>
+  </form>
+  </body>
+</html>
