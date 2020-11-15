@@ -8,7 +8,7 @@ from abilities import MARTIAL_ABILITIES
 from abilities import PROFESSIONAL_ABILITIES
 from abilities import SOCIAL_ABILITIES
 from abilities import SURVIVAL_ABILITIES
-from flask import Flask
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -66,7 +66,7 @@ class NPC:
     if type(abilities) == dict or type(abilities) == defaultdict:
       abilities = list(abilities.keys())
 
-    return abilities[random.randint(0, len(abilities) - 1)]
+    return random.choice(abilities)
 
   def gen_characteristics():
     from gen_characteristics import generate_characteristics
@@ -177,7 +177,6 @@ def main():
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
-  #print('NEW_NPC:', vars(new_npc))
   print("NPC Type:", new_npc.variant)
   print("NPC Age:", new_npc.age)
   print("NPC Characteristics:", new_npc.characteristics)
@@ -189,18 +188,23 @@ if __name__ == '__main__':
   exit(main())
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
+def variant_dropdown():
+    variants = ['turb', 'grog', 'noble', 'specialized', 'covenfolk']
+    return render_template('gen_npc.html', variants=variants)
+
+@app.route('/random/npc/')
 def flask_main():
-  #args = vars(gen_options().parse_args())
-  new_npc = NPC(variant="grog", age=25, specialization=None)
+  import random
+  #npc_variant = ['turb', 'grog', 'noble', 'specialized', 'covenfolk']
+  npc_variant = ['grog']
+  new_npc = NPC(variant=random.choice(npc_variant), age=random.randint(5, 45), specialization=None)
   new_npc.abilities = new_npc.gen_early_abilities()
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
-  #print('NEW_NPC:', vars(new_npc))
   print("NPC Type:", new_npc.variant)
   print("NPC Age:", new_npc.age)
   print("NPC Characteristics:", new_npc.characteristics)
   print("NPC Abilities:", new_npc.abilities)
   return vars(new_npc)
-
