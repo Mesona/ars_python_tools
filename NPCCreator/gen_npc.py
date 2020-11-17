@@ -171,19 +171,19 @@ class NPC:
 
       return secondaries
 
-
-def main():
-  args = vars(gen_options().parse_args())
-  new_npc = NPC(**args)
+def create_npc(variant, age, specialty=None):
+  new_npc = NPC(variant, age, specialty)
   new_npc.abilities = new_npc.gen_early_abilities()
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
-  print("NPC Type:", new_npc.variant)
-  print("NPC Age:", new_npc.age)
-  print("NPC Characteristics:", new_npc.characteristics)
-  print("NPC Abilities:", new_npc.abilities)
+  return new_npc
 
+
+
+def main():
+  args = vars(gen_options().parse_args())
+  new_npc = create_npc(**args)
   return new_npc
 
 if __name__ == '__main__':
@@ -208,20 +208,11 @@ def generated_npc():
   variant = request.form.get('variant')
   age = int(request.form.get('age'))
   specialization = request.form.get('specialty')
-  new_npc = NPC(variant=variant, age=age, specialization=specialization)
-  new_npc.abilities = new_npc.gen_early_abilities()
-  new_npc.characteristics = NPC.gen_characteristics()
-  if new_npc.age > 5:
-    new_npc.abilities = new_npc.gen_later_abilities()
+  new_npc = create_npc(variant, age, specialization)
   return vars(new_npc)
 
 @app.route('/random/npc/')
 def randomized_npc():
   import random
-  npc_variant = ['grog']
-  new_npc = NPC(variant=random.choice(npc_variant), age=random.randint(5, 45), specialization=None)
-  new_npc.abilities = new_npc.gen_early_abilities()
-  new_npc.characteristics = NPC.gen_characteristics()
-  if new_npc.age > 5:
-    new_npc.abilities = new_npc.gen_later_abilities()
+  new_npc = create_npc("grog", random.randint(5, 45))
   return vars(new_npc)
