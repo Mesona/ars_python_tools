@@ -36,7 +36,7 @@ def gen_options():
   )
 
   parser.add_argument(
-    '--specialization',
+    '--specialty',
     type=str,
     default="any",
     help='''
@@ -53,10 +53,10 @@ def gen_options():
 
 
 class NPC:
-  def __init__(self, variant="grog", age=25, specialization=None):
+  def __init__(self, variant="grog", age=25, specialty=None):
     self.variant = variant
     self.age = age
-    self.specialization = specialization
+    self.specialty = specialty
     self.abilities = {}
     self.characteristics = {}
     self.primary_ability = None
@@ -132,24 +132,24 @@ class NPC:
 
   def set_primary_ability(self):
     if self.variant == "grog":
-      if self.specialization not in MARTIAL_ABILITIES:
+      if self.specialty not in MARTIAL_ABILITIES:
         weapon_choice = NPC.randomize_abilities(MARTIAL_ABILITIES)
         return weapon_choice
       else:
-        return self.specialization
+        return self.specialty
     elif self.variant == "noble":
-      if self.specialization:
-        return self.specialization
+      if self.specialty:
+        return self.specialty
       else:
         return NPC.randomize_abilities(SOCIAL_ABILITIES)
     elif self.variant == "covenfolk":
-      if self.specialization:
-        return self.specialization
+      if self.specialty:
+        return self.specialty
       else:
         return None
     elif self.variant == "specialist":
-      if self.specialization:
-        return self.specialization
+      if self.specialty:
+        return self.specialty
       else:
         return NPC.randomize_abilities(PROFESSIONAL_ABILITIES)
     else:
@@ -157,19 +157,38 @@ class NPC:
 
   def set_secondary_abilities(self):
     secondaries = {}
+    number_of_secondaries = 0
+    secondary_selection = None
+    tertiary_selection = None
+
     if self.variant == "grog":
-      # Give grogs some combat abilities
-      while len(secondaries.keys()) < 3:
-        this_ability = NPC.randomize_abilities(SURVIVAL_ABILITIES)
-        if this_ability != self.primary_ability:
-          secondaries[this_ability] = 0
+      number_of_secondaries = 3
+      secondary_selection = SURVIVAL_ABILITIES
+      tertiary_selection = SOCIAL_ABILITIES
+    elif self.variant == "noble":
+      number_of_secondaries = 4
+      secondary_selection = SOCIAL_ABILITIES
+      tertiary_selection = GENERAL_ABILITIES
+    elif self.variant == "specialist":
+      number_of_secondaries = 3
+      secondary_selection = PROFESSIONAL_ABILITIES
+      tertiary_selection = GENERAL_ABILITIES
+    elif self.variant == "covenfolk":
+      number_of_secondaries = 5
+      secondary_selection = GENERAL_ABILITIES
+      tertiary_selection = SOCIAL_ABILITIES
 
-      while len(secondaries.keys()) < 5:
-        this_ability = NPC.randomize_abilities(SOCIAL_ABILITIES)
-        if this_ability != self.primary_ability:
-          secondaries[this_ability] = 0
+    while len(secondaries.keys()) < number_of_secondaries:
+      this_ability = NPC.randomize_abilities(secondary_selection)
+      if this_ability != self.primary_ability:
+        secondaries[this_ability] = 0
 
-      return secondaries
+    while len(secondaries.keys()) < (number_of_secondaries + 2):
+      this_ability = NPC.randomize_abilities(tertiary_selection)
+      if this_ability not in secondaries.keys():
+        secondaries[this_ability] = 0
+
+    return secondaries
 
 def create_npc(variant, age, specialty=None):
   new_npc = NPC(variant, age, specialty)
@@ -178,7 +197,6 @@ def create_npc(variant, age, specialty=None):
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
   return new_npc
-
 
 
 def main():
@@ -192,7 +210,7 @@ if __name__ == '__main__':
 
 @app.route('/')
 def gen_index():
-    variants = ['grog', 'noble', 'specialized', 'covenfolk']
+    variants = ['grog', 'noble', 'specialist', 'covenfolk']
     ages = list(range(5, 71))
     specialties = ALL_ABILITIES
     return render_template(
@@ -207,8 +225,8 @@ def gen_index():
 def generated_npc():
   variant = request.form.get('variant')
   age = int(request.form.get('age'))
-  specialization = request.form.get('specialty')
-  new_npc = create_npc(variant, age, specialization)
+  specialty = request.form.get('specialty')
+  new_npc = create_npc(variant, age, specialty)
   return vars(new_npc)
 
 @app.route('/random/npc/')
