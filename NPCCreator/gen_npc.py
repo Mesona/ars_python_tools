@@ -59,7 +59,7 @@ class NPC:
     self.specialty = specialty
     self.abilities = {}
     self.characteristics = {}
-    self.primary_ability = None
+    self.primary_ability = ""
     self.secondary_abilities = {}
 
   def randomize_abilities(abilities):
@@ -68,7 +68,12 @@ class NPC:
     if type(abilities) == dict or type(abilities) == defaultdict:
       abilities = list(abilities.keys())
 
-    return random.choice(abilities)
+    random_ability = random.choice(abilities)
+    # Keeping Native Language at starting 75
+    while random_ability == "Native Language":
+      random_ability = random.choice(abilities)
+
+    return random_ability
 
   def gen_characteristics():
     from gen_characteristics import generate_characteristics
@@ -92,23 +97,32 @@ class NPC:
 
 
   def gen_later_abilities(self):
-    primary_ability = self.set_primary_ability()
-    self.primary_ability = primary_ability
-    secondary_abilities = self.set_secondary_abilities()
-    self.secondary_abilities = secondary_abilities
+    self.primary_ability = self.set_primary_ability()
+    primary_ability = self.primary_ability
+    self.secondary_abilities = self.set_secondary_abilities()
+    secondary_abilities = self.secondary_abilities
 
     current_abilities = self.abilities.copy()
-    current_abilities[primary_ability]  # <-- Ensures priamry_ability is in current_abilities
+    current_abilities[self.primary_ability]  # <-- Ensures primary_ability is in current_abilities
     current_abilities.update(secondary_abilities)
     base_ability_count = len(current_abilities.keys())
 
     for i in range(5, self.age):
       current_ability_count = len(current_abilities.keys())
       # FIXME: Check the EXP requirements for level 7 ability
-      if current_abilities[primary_ability] < 150:
-        current_abilities[primary_ability] += 5
+      if primary_ability:
+        if current_abilities[primary_ability] < 150:
+          import random
+          # Give primary ability exp 80% of the time
+          if random.randint(0, 5) < 4:
+              current_abilities[primary_ability] += 5
+          else:
+            current_abilities[NPC.randomize_abilities(secondary_abilities)] += 5
+        else:
+          current_abilities[NPC.randomize_abilities(current_abilities)] += 5
+      # For NPCs with no "primary" ability
       else:
-        current_abilities[NPC.randomize_abilities(current_abilities)] += 5
+        current_abilities[NPC.randomize_abilities(secondary_abilities)] += 5
 
       # Give the character's secondary abilities +5 exp
       current_abilities[NPC.randomize_abilities(secondary_abilities)] += 5
@@ -138,17 +152,17 @@ class NPC:
       else:
         return self.specialty
     elif self.variant == "noble":
-      if self.specialty:
+      if self.specialty != None:
         return self.specialty
       else:
         return NPC.randomize_abilities(SOCIAL_ABILITIES)
     elif self.variant == "covenfolk":
-      if self.specialty:
+      if self.specialty != None:
         return self.specialty
       else:
         return None
     elif self.variant == "specialist":
-      if self.specialty:
+      if self.specialty != None:
         return self.specialty
       else:
         return NPC.randomize_abilities(PROFESSIONAL_ABILITIES)
@@ -226,8 +240,15 @@ def generated_npc():
   variant = request.form.get('variant')
   age = int(request.form.get('age'))
   specialty = request.form.get('specialty')
+  if specialty == "None":
+    specialty = None
   new_npc = create_npc(variant, age, specialty)
-  return vars(new_npc)
+  #return vars(new_npc)
+  return render_template(
+    'show_npc.html',
+    npc=new_npc,
+    abilities=new_npc.abilities
+  )
 
 @app.route('/random/npc/')
 def randomized_npc():
