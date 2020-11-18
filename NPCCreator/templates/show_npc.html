@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>NPC Creator</title>
+  </head>
+  <body>
+    <div>
+      <hr>
+      <h2>{{npc.age}} years old {{npc.variant}}</h2>
+      <hr>
+      NPC Characteristics: <br>
+      {{npc.characteristics}}
+      <hr>
+      {% for ability in abilities %}
+        {{ability}}: {{abilities[ability]}}
+        <br>
+      {% endfor %}
+      <hr>
+      SECONDARIES
+      <br>
+      {{npc.secondary_abilities}}
+      <hr>
+      PRIMARIES
+      <br>
+      {{npc.primary_ability}}
+      <hr>
+      SPECIALTY <br>
+      {{npc.specialty}}
+    </div>
+    <div>
+    </div>
+  </form>
+  </body>
+</html>
