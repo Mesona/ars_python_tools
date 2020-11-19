@@ -227,7 +227,8 @@ def create_npc(variant, age, specialty=None):
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
   new_npc.abilities = new_npc.gen_ability_levels()
-  new_npc.abilities = new_npc.gen_useful_data()
+  # TODO: Return to this later
+  #new_npc.abilities = new_npc.gen_useful_data()
   return new_npc
 
 
