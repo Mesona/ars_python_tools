@@ -204,12 +204,30 @@ class NPC:
 
     return secondaries
 
+  def gen_ability_levels(self):
+    from math import sqrt, floor
+    abilities = self.abilities.copy()
+    for ability in abilities:
+      ability_exp = abilities[ability]
+      ability_level = floor((sqrt(8 * (ability_exp / 5) + 1) - 1) / 2)
+      abilities[ability] = {'exp': ability_exp, 'level': ability_level}
+
+    return abilities
+
+  def gen_useful_data(self):
+    abilities = self.abilities.copy()
+    if "brawl" in abilities.keys():
+      abilities["brawl"]["calculations"] = 1234
+
+
 def create_npc(variant, age, specialty=None):
   new_npc = NPC(variant, age, specialty)
   new_npc.abilities = new_npc.gen_early_abilities()
   new_npc.characteristics = NPC.gen_characteristics()
   if new_npc.age > 5:
     new_npc.abilities = new_npc.gen_later_abilities()
+  new_npc.abilities = new_npc.gen_ability_levels()
+  new_npc.abilities = new_npc.gen_useful_data()
   return new_npc
 
 

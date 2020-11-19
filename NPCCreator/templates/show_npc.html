@@ -5,31 +5,47 @@
       <title>NPC Creator</title>
   </head>
   <body>
-    <div>
+    <div style="width: 100%">
       <hr>
       <h2>{{npc.age}} years old {{npc.variant}}</h2>
       <hr>
-      NPC Characteristics: <br>
-      {{npc.characteristics}}
-      <hr>
-      {% for ability in abilities %}
-        {{ability}}: {{abilities[ability]}}
-        <br>
-      {% endfor %}
-      <hr>
-      SECONDARIES
-      <br>
-      {{npc.secondary_abilities}}
-      <hr>
-      PRIMARIES
-      <br>
-      {{npc.primary_ability}}
-      <hr>
-      SPECIALTY <br>
-      {{npc.specialty}}
+      <div style="float:left; width: 50%">
+        {% for ability in abilities %}
+          <div id=ability>
+            {{ability}}: Score: {{abilities[ability]['level']}}, EXP: {{abilities[ability]['exp']}}
+          </div>
+          <script>
+            document.getElementById(ability).innerHTML = Math.floor(Math.sqrt(8*((abilities[ability]) / 5) + 1) - 1) / 2));
+            document.getElementById({{ability}}).innerHTML = "test"
+          </script>
+          <br>
+        {% endfor %}
+      </div>
+      <div stlye="float:right;">
+        NPC Characteristics: <br>
+        {% for stat in npc.characteristics %}
+          {{stat}}: {{npc.characteristics[stat]}}<br>
+        {% endfor %}
+      </div>
     </div>
-    <div>
+    <br>
+    <hr>
+    <div hidden "TO RETURN TO LATER">
+      KEYS: {{abilities.keys()}}
+      NL: {{"Native Language" in abilities.keys()}}
+      <p id="nl">Test</p>
+      <script>
+        if (abilities.hasAttribute('Native Language')) {
+          document.getElementById("nl").innerHTML = "yo:";
+        }
+      </script>
+      <p id="useful"><h4>Useful Numbers!</h4></p>
+
+      <script>
+      if ("brawl" in abilities.keys()) {
+        document.getElementById("useful").innerHTML = "Brawl:";
+      }
+      </script>
     </div>
-  </form>
   </body>
 </html>
