@@ -272,6 +272,10 @@ def generated_npc():
 @app.route('/random/npc/')
 def randomized_npc():
   import random
-  varaint = random.choice(['grog', 'noble', 'specialist', 'covenfolk'])
-  new_npc = create_npc("grog", random.randint(5, 45))
-  return vars(new_npc)
+  variant = random.choice(['grog', 'noble', 'specialist', 'covenfolk'])
+  new_npc = create_npc(variant, random.randint(5, 70))
+  return render_template(
+    'show_npc.html',
+    npc=new_npc,
+    abilities=new_npc.abilities
+  )
