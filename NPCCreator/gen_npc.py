@@ -69,9 +69,6 @@ class NPC:
       abilities = list(abilities.keys())
 
     random_ability = random.choice(abilities)
-    # Keeping Native Language at starting 75
-    while random_ability == "Native Language":
-      random_ability = random.choice(abilities)
 
     return random_ability
 
@@ -145,28 +142,19 @@ class NPC:
     return current_abilities
 
   def set_primary_ability(self):
+    if self.specialty != None:
+      return self.specialty
+
     if self.variant == "grog":
-      if self.specialty not in MARTIAL_ABILITIES:
-        weapon_choice = NPC.randomize_abilities(MARTIAL_ABILITIES)
-        return weapon_choice
-      else:
-        return self.specialty
+      return NPC.randomize_abilities(MARTIAL_ABILITIES)
     elif self.variant == "noble":
-      if self.specialty != None:
-        return self.specialty
-      else:
-        return NPC.randomize_abilities(SOCIAL_ABILITIES)
+      return NPC.randomize_abilities(SOCIAL_ABILITIES)
     elif self.variant == "covenfolk":
-      if self.specialty != None:
-        return self.specialty
-      else:
-        return None
+      return None
     elif self.variant == "specialist":
-      if self.specialty != None:
-        return self.specialty
-      else:
-        return NPC.randomize_abilities(PROFESSIONAL_ABILITIES)
+      return NPC.randomize_abilities(PROFESSIONAL_ABILITIES)
     else:
+      # Should not actually ever be used
       return NPC.randomize_abilities(GENERAL_ABILITIES)
 
   def set_secondary_abilities(self):
@@ -179,6 +167,9 @@ class NPC:
       number_of_secondaries = 3
       secondary_selection = SURVIVAL_ABILITIES
       tertiary_selection = SOCIAL_ABILITIES
+      if self.specialty != None:
+        if self.specialty not in MARTIAL_ABILITIES:
+          secondaries[NPC.randomize_abilities(MARTIAL_ABILITIES)] = 0
     elif self.variant == "noble":
       number_of_secondaries = 4
       secondary_selection = SOCIAL_ABILITIES

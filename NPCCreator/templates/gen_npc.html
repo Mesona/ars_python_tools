@@ -6,18 +6,24 @@
   </head>
   <body>
     <form class="form-inline" method="POST" action="{{ url_for('generated_npc') }}">
+    Grogs have a greater skill focus on martial abilities.<br>
+    Nobles have a greater skill focus on social abilities.<br>
+    Specialists have a skill focus on crafting and organization/knowledge skills.<br>
+    Covenfolk have a greater skill focus on general abilities.<br>
     NPC Variant: <select name="variant">
       {% for variant in variants %}
         <option value="{{variant.variant}}">{{variant.variant}}</option>"
       {% endfor %}
     </select>
-    <br>
+    <br><br>
+    NPCs are given 15 exp per year (after age 5) distributed in chunks of 5 exp.<br>
     NPC Age: <select name="age">
       {% for age in ages %}
         <option value= "{{age.age}}">{{age.age}}</option>"
       {% endfor %}
     </select>
-    <br>
+    <br><br>
+    Specialty can be used to ensure an NPC has a specific ability. This becomes the NPC's focus if chosen.<br>
     NPC Specialty (Optional): <select name="specialty">
       <option value= "None" selected>None</option>"
       {% for specialty in specialties %}
@@ -30,5 +36,8 @@
       <button type="submit" class="btn btn-default">Create NPC</button>
     </li>
   </form>
+  <br><br>
+  For full implimentation details, feel free to read the github at:<br>
+  <a href=https://github.com/Mesona/ars_python_tools/tree/master/NPCCreator>https://github.com/Mesona/ars_python_tools/tree/master/NPCCreator</a>
   </body>
 </html>
