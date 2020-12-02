@@ -236,7 +236,7 @@ if __name__ == '__main__':
 def gen_index():
     variants = ['grog', 'noble', 'specialist', 'covenfolk']
     ages = list(range(5, 71))
-    specialties = ALL_ABILITIES
+    specialties = sorted(ALL_ABILITIES)
     return render_template(
       'gen_npc.html',
       # FIXME: Figure out how to properly pass lists through Flask
@@ -253,7 +253,6 @@ def generated_npc():
   if specialty == "None":
     specialty = None
   new_npc = create_npc(variant, age, specialty)
-  #return vars(new_npc)
   return render_template(
     'show_npc.html',
     npc=new_npc,
