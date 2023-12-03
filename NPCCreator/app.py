@@ -73,7 +73,7 @@ class NPC:
     return random_ability
 
   def gen_characteristics():
-    from gen_characteristics import generate_characteristics
+    from helpers.gen_characteristics import generate_characteristics
     return generate_characteristics()
 
 
@@ -259,7 +259,7 @@ def generated_npc():
     abilities=new_npc.abilities
   )
 
-@app.route('/random/npc/')
+@app.route('/random/npc/', methods=['GET'])
 def randomized_npc():
   import random
   variant = random.choice(['grog', 'noble', 'specialist', 'covenfolk'])
