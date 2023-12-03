@@ -223,15 +223,6 @@ def create_npc(variant, age, specialty=None):
   return new_npc
 
 
-def main():
-  args = vars(gen_options().parse_args())
-  new_npc = create_npc(**args)
-  return new_npc
-
-if __name__ == '__main__':
-  exit(main())
-
-
 @app.route('/')
 def gen_index():
     variants = ['grog', 'noble', 'specialist', 'covenfolk']
@@ -269,3 +260,12 @@ def randomized_npc():
     npc=new_npc,
     abilities=new_npc.abilities
   )
+
+
+def main():
+  args = vars(gen_options().parse_args())
+  new_npc = create_npc(**args)
+  return new_npc
+
+if __name__ == '__main__':
+  exit(main())
