@@ -1,13 +1,13 @@
 #!/bin/python
-from abilities import ACADEMIC_ABILITIES
-from abilities import ALL_ABILITIES
-from abilities import EARLY_LIFE_ABILITIES
-from abilities import GENERAL_ABILITIES
-from abilities import LATE_LIFE_ABILITIES
-from abilities import MARTIAL_ABILITIES
-from abilities import PROFESSIONAL_ABILITIES
-from abilities import SOCIAL_ABILITIES
-from abilities import SURVIVAL_ABILITIES
+from helpers.abilities import ACADEMIC_ABILITIES
+from helpers.abilities import ALL_ABILITIES
+from helpers.abilities import EARLY_LIFE_ABILITIES
+from helpers.abilities import GENERAL_ABILITIES
+from helpers.abilities import LATE_LIFE_ABILITIES
+from helpers.abilities import MARTIAL_ABILITIES
+from helpers.abilities import PROFESSIONAL_ABILITIES
+from helpers.abilities import SOCIAL_ABILITIES
+from helpers.abilities import SURVIVAL_ABILITIES
 from flask import Flask, flash, redirect, render_template, \
      request, url_for
 
