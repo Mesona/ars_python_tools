@@ -18,9 +18,9 @@ on:
 env:
   GCLOUD_PROJECT: ${{ secrets.GKE_PROJECT }}
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: ars-character-creator    # Add your cluster name here.
+  GKE_CLUSTER_NAME: ars-character-creator    # Add your cluster name here.
   GKE_ZONE: us-central1-c   # Add your cluster zone here.
-  DEPLOYMENT_NAME: gke-test # Add your deployment name here.
+  DEPLOYMENT_NAME: deployment.yaml # Add your deployment name here.
   IMAGE: static-site
 
 jobs:
@@ -55,11 +55,11 @@ jobs:
     # Get the GKE credentials so we can deploy to the cluster
     # - uses: google-github-actions/get-gke-credentials@v2
     #   with:
-    #     cluster_name: ${{ env.GKE_CLUSTER }}
+    #     cluster_name: ${{ env.GKE_CLUSTER_NAME }}
     #     location: ${{ env.GKE_ZONE }}
     - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
       with:
-        cluster_name: ${{ env.GKE_CLUSTER }}
+        cluster_name: ${{ env.GKE_CLUSTER_NAME }}
         location: ${{ env.GKE_ZONE }}
         project_id: ${{ secrets.GKE_PROJECT }}
         # credentials: ${{ secrets.GKE_SA_KEY }}
@@ -77,6 +77,12 @@ jobs:
     - name: Publish
       run: |-
         docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+
+    - name: Configure Kubectl
+      run: |
+        gcloud config set project $PROJECT_ID
+        gcloud config set computer/zone $GKE_ZONE
+        gcloud container clusters get-credentials $GKE_CLUSTER_NAME
 
     # Set up kustomize
     - name: Set up Kustomize
