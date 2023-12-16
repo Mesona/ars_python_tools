@@ -16,6 +16,7 @@ on:
       - github_actions
 
 env:
+  GCLOUD_PROJECT: ${{ secrets.GKE_PROJECT }}
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ars-character-creator    # Add your cluster name here.
   GKE_ZONE: us-central1-c   # Add your cluster zone here.
