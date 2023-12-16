@@ -37,6 +37,11 @@ jobs:
     # - name: 'Set up Cloud SDK'
     #   uses: google-github-actions/setup-gcloud@v2
 
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ secrets.GKE_SA_KEY }}
+
     - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
       with:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
@@ -46,11 +51,6 @@ jobs:
     # helper for authentication
     - run: |-
         gcloud --quiet auth configure-docker
-
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        credentials_json: ${{ secrets.GKE_SA_KEY }}
 
     # Get the GKE credentials so we can deploy to the cluster
     # - uses: google-github-actions/get-gke-credentials@v2
