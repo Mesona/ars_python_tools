@@ -42,10 +42,9 @@ jobs:
       with:
         credentials_json: ${{ secrets.GKE_SA_KEY }}
 
-    - uses: google-github-actions/setup-gcloud@v2
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ secrets.GKE_PROJECT }}
+    # - uses: google-github-actions/setup-gcloud@v2
+    #   with:
+    #     project_id: ${{ secrets.GKE_PROJECT }}
 
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
@@ -53,21 +52,23 @@ jobs:
         gcloud --quiet auth configure-docker
 
     # Setup gcloud CLI
-    # - name: 'Set up Cloud SDK'
-    #   uses: google-github-actions/setup-gcloud@v2
+    - name: 'Set up Cloud SDK'
+      uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
 
     # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER_NAME }}
+        location: ${{ env.GKE_ZONE }}
+        credentials: ${{ secrets.GKE_SA_KEY }}
+
     # - uses: google-github-actions/get-gke-credentials@v2
     #   with:
     #     cluster_name: ${{ env.GKE_CLUSTER_NAME }}
     #     location: ${{ env.GKE_ZONE }}
-    - uses: google-github-actions/get-gke-credentials@v2
-      with:
-        # cluster_name: 'projects/${{ secrets.GKE_PROJECT_ID }}/zones/us-central1-b/clusters/ars-character-creator'
-        cluster_name: ${{ env.GKE_CLUSTER_NAME }}
-        location: ${{ env.GKE_ZONE }}
-        # project_id: ${{ secrets.GKE_PROJECT_ID }}
-        # credentials: ${{ secrets.GKE_SA_KEY }}
 
     # Build the Docker image
     - name: Build
