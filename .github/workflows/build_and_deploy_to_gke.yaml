@@ -44,8 +44,8 @@ jobs:
 
     - uses: google-github-actions/auth@v2
       with:
-        # workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-actions-oidc
-        workload_identity_provider: principal://iam.googleapis.com/projects/${{ secrets.GKE_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/subject/SUBJECT_ATTRIBUTE_VALUE
+        workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-actions-oidc
+        # workload_identity_provider: principal://iam.googleapis.com/projects/${{ secrets.GKE_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/subject/SUBJECT_ATTRIBUTE_VALUE
         service_account: ${{ secrets.SA_EMAIL }}
         # project_id: ${{ secrets.GKE_PROJECT_ID }}
         # credentials_json: ${{ secrets.GKE_SA_KEY }}
