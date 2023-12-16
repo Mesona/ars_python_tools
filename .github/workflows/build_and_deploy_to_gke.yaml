@@ -63,7 +63,7 @@ jobs:
     #     location: ${{ env.GKE_ZONE }}
     - uses: google-github-actions/get-gke-credentials@v2
       with:
-        cluster_name: 'projects/${{ secrest.GKE_PROJECT_ID }}/zones/us-central1-b/clusters/ars-character-creator'
+        cluster_name: 'projects/${{ secrets.GKE_PROJECT_ID }}/zones/us-central1-b/clusters/ars-character-creator'
         # cluster_name: ${{ env.GKE_CLUSTER_NAME }}
         # location: ${{ env.GKE_ZONE }}
         # project_id: ${{ secrets.GKE_PROJECT }}
