@@ -43,7 +43,7 @@ jobs:
 
     - uses: 'google-github-actions/auth@v2'
       with:
-        project_id: $PROJECT_ID
+        project_id: '${{ secrets.GKE_PROJECT }}'
         credentials_json: '${{ secrets.GKE_SA_KEY }}'
 
     - uses: google-github-actions/setup-gcloud@v2
