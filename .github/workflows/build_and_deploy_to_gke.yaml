@@ -84,12 +84,6 @@ jobs:
       run: |-
         docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
-    - name: Configure Kubectl
-      run: |
-        gcloud config set project $PROJECT_ID
-        gcloud config set computer/zone $GKE_ZONE
-        gcloud container clusters get-credentials $GKE_CLUSTER_NAME
-
     # Set up kustomize
     - name: Set up Kustomize
       run: |-
