@@ -57,7 +57,7 @@ jobs:
     #   with:
     #     cluster_name: ${{ env.GKE_CLUSTER_NAME }}
     #     location: ${{ env.GKE_ZONE }}
-    - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
+    - uses: google-github-actions/get-gke-credentials@v2
       with:
         cluster_name: ${{ env.GKE_CLUSTER_NAME }}
         location: ${{ env.GKE_ZONE }}
