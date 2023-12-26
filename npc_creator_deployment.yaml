@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ars-character-creator
+  labels:
+    app: ars-character-creator
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ars-character-creator
+  template:
+    metadata:
+      labels:
+        app: ars-character-creator
+    spec:
+      containers:
+        - name: ars-character-creator-app
+          image: us-central1-docker.pkg.dev/ars-magica-npc-generator/ars-character-creator-images/ars-character-creator:v1
+          ports:
+          - containerPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  ports:
+    - port: 5000
+      protocol: TCP
+      targetPort: 5000
+  selector:
+    app: ars-character-creator
+  type: LoadBalancer
