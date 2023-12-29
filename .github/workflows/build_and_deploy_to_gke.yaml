@@ -63,7 +63,7 @@ jobs:
     - name: Build
       run: |-
         docker build \
-          --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+          --tag "us-central1-docker.pkg.dev/ars-magica-npc-generator/ars-character-creator-images/ars-character-creator" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           .
@@ -71,4 +71,4 @@ jobs:
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-
-        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+        docker push "us-central1-docker.pkg.dev/ars-magica-npc-generator/ars-character-creator-images/ars-character-creator"
