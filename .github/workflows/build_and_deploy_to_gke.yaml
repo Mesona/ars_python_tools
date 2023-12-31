@@ -86,7 +86,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl apply -f npc_creator_deployment.yaml
+        kubectl apply -f $DEPLOYMENT_NAME
 
         # # Set up kustomize
         # - name: Set up Kustomize
