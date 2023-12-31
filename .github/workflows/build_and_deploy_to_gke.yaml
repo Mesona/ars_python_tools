@@ -24,7 +24,7 @@ env:
   PROJECT_NUMBER: ${{ secrets.GKE_PROJECT_NUMBER }}
   GKE_CLUSTER_NAME: ars-character-creator    # Add your cluster name here.
   GKE_ZONE: us-central1   # Add your cluster zone here.
-  DEPLOYMENT_NAME: projects/npc_creator_deployment.yaml # Add your deployment name here.
+  DEPLOYMENT_NAME: npc_creator_deployment.yaml # Add your deployment name here.
   IMAGE: ars-character-creator-images
   DOCKER_TAG: "$GKE_ZONE-docker.pkg.dev/$GCLOUD_PROJECT/$IMAGE/ars-character-creator"
 
