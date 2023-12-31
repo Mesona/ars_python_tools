@@ -83,16 +83,21 @@ jobs:
       run: |-
         docker push ${{ env.DOCKER_TAG }}
 
-    # Set up kustomize
-    - name: Set up Kustomize
-      run: |-
-        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-        chmod u+x ./kustomize
-
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        ./kustomize edit set image=${{ env.DOCKER_TAG }}
-        ./kustomize build . | kubectl apply -f -
-        kubectl rollout status deployment/$DEPLOYMENT_NAME
-        kubectl get services -o wide
+        kubectl apply -f npc_creator_deployment.yaml
+
+        # # Set up kustomize
+        # - name: Set up Kustomize
+        #   run: |-
+        #     curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        #     chmod u+x ./kustomize
+
+        # # Deploy the Docker image to the GKE cluster
+        # - name: Deploy
+        #   run: |-
+        #     ./kustomize edit set image=${{ env.DOCKER_TAG }}
+        #     ./kustomize build . | kubectl apply -f -
+        #     kubectl rollout status deployment/$DEPLOYMENT_NAME
+        #     kubectl get services -o wide
