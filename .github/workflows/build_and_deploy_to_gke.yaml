@@ -51,23 +51,36 @@ jobs:
 
     # Setup gcloud CLI
     - name: 'Set up Cloud SDK'
-      uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+      uses: google-github-actions/setup-gcloud@v2
       with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        version: '>= 363.0.0'
         project_id: ${{ secrets.GKE_PROJECT }}
+
+
+    ## Setup gcloud CLI
+    #- name: 'Set up Cloud SDK'
+    #  uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+    #  with:
+    #    service_account_key: ${{ secrets.GKE_SA_KEY }}
+    #    project_id: ${{ secrets.GKE_PROJECT }}
 
     # Docker auth
     - name: 'Docker auth'
       run: |-
         gcloud auth configure-docker ${{ env.GKE_ZONE }}-docker.pkg.dev --quiet
 
-
     # Get the GKE credentials so we can deploy to the cluster
-    - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+    - uses: google-github-actions/get-gke-credentials@v2
       with:
         cluster_name: ${{ env.GKE_CLUSTER_NAME }}
         location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_SA_KEY }}
+
+    ## Get the GKE credentials so we can deploy to the cluster
+    #- uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+    #  with:
+    #    cluster_name: ${{ env.GKE_CLUSTER_NAME }}
+    #    location: ${{ env.GKE_ZONE }}
+    #    credentials: ${{ secrets.GKE_SA_KEY }}
 
     # Build the Docker image
     - name: Build
@@ -83,13 +96,14 @@ jobs:
       run: |-
         docker push ${{ env.DOCKER_TAG }}
 
-    - name: CreateNamespace
-      run: |-
-        kubectl create namespace ars_npc
+    ## TODO: figure out how to safely create only if it does not exist
+    #- name: CreateNamespace
+    #  run: |-
+    #    kubectl create namespace ars-npc
 
     - name: SetDefaultNamespace
       run: |-
-        kubectl config set-context --namespace=ars_npc
+        kubectl config set-context --namespace=ars-npc
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
