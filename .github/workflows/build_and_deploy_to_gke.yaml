@@ -83,6 +83,14 @@ jobs:
       run: |-
         docker push ${{ env.DOCKER_TAG }}
 
+    - name: CreateNamespace
+      run: |-
+        kubectl create namespace ars_npc
+
+    - name: SetDefaultNamespace
+      run: |-
+        kubectl config set-context --namespace=ars_npc
+
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
