@@ -36,3 +36,11 @@ spec:
   selector:
     app: ars-character-creator
   type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ars-character-creator
+  labels:
+    name: ars-character-creator

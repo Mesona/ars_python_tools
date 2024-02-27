@@ -96,14 +96,9 @@ jobs:
       run: |-
         docker push ${{ env.DOCKER_TAG }}
 
-    ## TODO: figure out how to safely create only if it does not exist
-    #- name: CreateNamespace
+    #- name: SetDefaultNamespace
     #  run: |-
-    #    kubectl create namespace ars-npc
-
-    - name: SetDefaultNamespace
-      run: |-
-        kubectl config set-context --namespace=ars-npc
+    #    kubectl config set-context --namespace=ars-npc
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
