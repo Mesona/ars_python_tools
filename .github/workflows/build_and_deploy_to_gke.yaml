@@ -100,10 +100,16 @@ jobs:
     #  run: |-
     #    kubectl config set-context --namespace=ars-npc
 
+    # Download files from artifact repo
+    #- name: Download Artifacts
+    #  run: |-
+    #    docker pull "$DOCKER_TAG:latest"
+
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl apply -f $DEPLOYMENT_NAME
+        #kubectl create deployment manual-build --image="$DOCKER_TAG:latest"
+        kubectl apply -f npc_creator_deployment.yaml
 
         # # Set up kustomize
         # - name: Set up Kustomize

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ars-character-creator-app
-          image: us-central1-docker.pkg.dev/ars-magica-npc-generator/ars-character-creator-images/ars-character-creator:v1
+          image: us-central1-docker.pkg.dev/ars-magica-npc-generator/ars-character-creator-images/ars-character-creator:latest
           ports:
           - containerPort: 5000
 
