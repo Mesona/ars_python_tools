@@ -36,6 +36,7 @@ spec:
   selector:
     app: ars-character-creator
   type: LoadBalancer
+  loadBalancerIP: "34.144.198.104"
 
 ---
 apiVersion: v1
